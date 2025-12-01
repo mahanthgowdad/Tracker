@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAANG 24-Week Detailed Roadmap</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --success: #16a34a;
+            --border: #e2e8f0;
+            --google: #ea4335;
+            --meta: #0668E1;
+            --amazon: #ff9900;
+        }
+
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #1e293b; }
+
+        /* Header */
+        .header {
+            background: #1e293b; color: white; padding: 1rem 2rem; position: sticky; top: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header h1 { margin: 0; font-size: 1.4rem; }
+        .progress-box { text-align: right; font-size: 0.85rem; }
+        .progress-bar { width: 200px; height: 8px; background: #334155; border-radius: 4px; overflow: hidden; margin-top: 5px; }
+        .progress-fill { height: 100%; background: var(--success); width: 0%; transition: width 0.3s; }
+
+        /* Container */
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+
+        /* Week Card */
+        .week-card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow: hidden;
+        }
+        .week-header {
+            padding: 1rem; background: #f1f5f9; cursor: pointer; display: flex; justify-content: space-between;
+            align-items: center; font-weight: 700; border-bottom: 1px solid var(--border);
+        }
+        .week-header:hover { background: #e2e8f0; }
+        .week-content { display: none; padding: 1.5rem; }
+        .week-card.active .week-content { display: block; }
+
+        /* Tech Panel */
+        .tech-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;
+            background: #e0f2fe; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; font-size: 0.85rem;
+        }
+        .tech-col { display: flex; flex-direction: column; }
+        .tech-label { font-weight: 800; color: #0369a1; margin-bottom: 6px; font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid #bae6fd; padding-bottom: 4px; }
+        .tech-list { list-style: none; padding: 0; margin: 0; }
+        .tech-list li { margin-bottom: 4px; padding-left: 12px; position: relative; }
+        .tech-list li::before { content: "•"; color: #0284c7; position: absolute; left: 0; font-weight: bold; }
+
+        /* Days Grid */
+        .days-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+        .day-card { border: 1px solid var(--border); border-radius: 6px; padding: 1rem; background: white; }
+        .day-title { font-weight: 700; margin-bottom: 0.5rem; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; }
+
+        /* Problems */
+        .prob-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; padding: 4px 0; border-bottom: 1px dashed #f1f5f9; }
+        .prob-link { text-decoration: none; color: #334155; flex-grow: 1; margin-left: 8px; }
+        .prob-link:hover { color: var(--primary); text-decoration: underline; }
+        
+        .boss-box { margin-top: 10px; background: #fff1f2; padding: 8px; border-radius: 4px; border: 1px solid #fecdd3; }
+        .boss-label { font-size: 0.7rem; font-weight: 800; color: #be123c; text-transform: uppercase; display: block; }
+
+        input[type="checkbox"] { accent-color: var(--success); cursor: pointer; }
+        
+        /* Utility */
+        .controls { text-align: center; margin: 2rem 0; }
+        button { padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; }
+        button.outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); margin-left: 10px; }
+        
+        @media print {
+            .week-content { display: block !important; }
+            .week-card { break-inside: avoid; }
+            .header, .controls { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div>
+        <h1>MAANG 24-Week Detailed Roadmap</h1>
+        <span style="font-size: 0.8rem; opacity: 0.8;">Full Stack • AI • DevOps • DSA</span>
+    </div>
+    <div class="progress-box">
+        <div id="statsText">0% Complete</div>
+        <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
+    </div>
+</div>
+
+<div class="container" id="app"></div>
+
+<div class="controls">
+    <button onclick="window.print()">🖨️ Print PDF</button>
+    <button class="outline" onclick="resetProgress()">⚠️ Reset</button>
+</div>
+
+<script>
+    // === 24-WEEK DATABASE WITH 3 TOPICS PER WEEK ===
+    const roadmapData = [
+        // --- MONTH 1: FOUNDATIONS ---
+        {
+            week: 1, title: "Arrays & Hashing",
+            tech: { 
+                be: ["Stack vs Heap Memory", "String Pool & Immutability", "Garbage Collection Basics"], 
+                fe: ["ES6: Arrow Functions", "ES6: Destructuring & Spread", "ES6: Modules (Import/Export)"], 
+                devops: ["Git Internals (.git folder)", "Staging vs Committing", "Global Config & Aliases"], 
+                ai: ["NumPy Arrays vs Lists", "Vectorization (No loops)", "Indexing & Slicing"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Contains Duplicate", "Valid Anagram", "Two Sum"], boss: "Two Sum", co: "Google" },
+                { name: "Tue", drill: ["Group Anagrams", "Top K Frequent", "Encode/Decode Strings"], boss: "Group Anagrams", co: "Amazon" },
+                { name: "Wed", drill: ["Product of Array Except Self", "Valid Sudoku", "Longest Consecutive Seq"], boss: "Product of Array", co: "Apple" },
+                { name: "Thu", drill: ["Is Subsequence", "Replace Elements", "Length of Last Word"], boss: "Valid Sudoku", co: "Meta" },
+                { name: "Fri", drill: ["Design HashMap", "Sort Colors", "Brick Wall"], boss: "Design HashMap", co: "Microsoft" },
+                { name: "Sat", drill: ["Unique Email Addresses", "Isomorphic Strings", "Can Place Flowers"], boss: "Sort Colors", co: "Google" },
+                { name: "Sun", drill: ["Review Week 1", "Review Week 1", "Review Week 1"], boss: "First Missing Positive", co: "Hard" }
+            ]
+        },
+        {
+            week: 2, title: "Two Pointers",
+            tech: { 
+                be: ["Interfaces vs Abstract Classes", "Polymorphism Types", "Constructors & 'super'"], 
+                fe: ["Event Loop & Call Stack", "Callbacks vs Promises", "Microtask Queue"], 
+                devops: ["Linux Permissions (chmod)", "Piping & Grep", "SSH Key Gen & Auth"], 
+                ai: ["Pandas Series & DataFrames", "Reading CSV/JSON", "loc vs iloc Selection"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Valid Palindrome", "Two Sum II", "3Sum"], boss: "3Sum", co: "Meta" },
+                { name: "Tue", drill: ["Container With Most Water", "Trapping Rain Water", "Move Zeroes"], boss: "Trapping Rain", co: "Google" },
+                { name: "Wed", drill: ["Rotate Array", "Boats to Save People", "Remove Duplicates"], boss: "Container Most Water", co: "Amazon" },
+                { name: "Thu", drill: ["Valid Palindrome II", "Merge Strings Alternately", "Reverse String"], boss: "Rotate Array", co: "Microsoft" },
+                { name: "Fri", drill: ["Minimum Difference", "Array Partition", "Sort Array By Parity"], boss: "Boats to Save People", co: "Apple" },
+                { name: "Sat", drill: ["4Sum", "Remove Element", "Implement strStr"], boss: "4Sum", co: "Meta" },
+                { name: "Sun", drill: ["Review Week 2", "Review Week 2", "Review Week 2"], boss: "Merge Sorted Array", co: "Meta" }
+            ]
+        },
+        {
+            week: 3, title: "Sliding Window",
+            tech: { 
+                be: ["HashMap Internals (Buckets)", "Equals() & HashCode()", "ArrayList vs LinkedList"], 
+                fe: ["DOM Manipulation", "Event Bubbling/Capturing", "Virtual DOM Concept"], 
+                devops: ["Maven Lifecycle (clean/install)", "Dependency Scopes", "pom.xml Structure"], 
+                ai: ["Pandas GroupBy & Aggregations", "Merging & Joins", "Handling Missing Data"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Best Time to Buy Stock", "Longest Substring No Repeats", "Longest Repeating Char Replacement"], boss: "Longest Substring", co: "Meta" },
+                { name: "Tue", drill: ["Permutation in String", "Minimum Window Substring", "Sliding Window Max"], boss: "Sliding Window Max", co: "Google" },
+                { name: "Wed", drill: ["Find All Anagrams", "Contains Duplicate II", "Max Consecutive Ones"], boss: "Min Window Substring", co: "Meta" },
+                { name: "Thu", drill: ["Fruit Into Baskets", "Max Average Subarray", "Diet Plan Performance"], boss: "Fruit Into Baskets", co: "Google" },
+                { name: "Fri", drill: ["Frequency of Most Frequent Element", "Minimum Size Subarray Sum", "Subarray Product Less Than K"], boss: "Freq Most Freq Element", co: "Amazon" },
+                { name: "Sat", drill: ["Swap For Longest Repeated Character Substring", "Grumpy Bookstore Owner", "Maximum Points You Can Obtain from Cards"], boss: "Max Points Cards", co: "Google" },
+                { name: "Sun", drill: ["Review Week 3", "Review Week 3", "Review Week 3"], boss: "Substring with Concatenation of All Words", co: "Hard" }
+            ]
+        },
+        {
+            week: 4, title: "Stack",
+            tech: { 
+                be: ["Streams API (Filter/Map)", "Lambda Expressions", "Optional Class Usage"], 
+                fe: ["React JSX & Components", "Props vs State", "Unidirectional Data Flow"], 
+                devops: ["DNS & IP Addresses", "TCP vs UDP Handshake", "HTTP Methods & Codes"], 
+                ai: ["Matplotlib Histograms", "Scatter Plots", "Box Plots for Outliers"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Valid Parentheses", "Min Stack", "Evaluate Reverse Polish"], boss: "Valid Parentheses", co: "Amazon" },
+                { name: "Tue", drill: ["Generate Parentheses", "Daily Temperatures", "Car Fleet"], boss: "Daily Temperatures", co: "Meta" },
+                { name: "Wed", drill: ["Largest Rectangle Histogram", "Online Stock Span", "Asteroid Collision"], boss: "Largest Rectangle", co: "Google" },
+                { name: "Thu", drill: ["Simplify Path", "Remove K Digits", "132 Pattern"], boss: "Simplify Path", co: "Meta" },
+                { name: "Fri", drill: ["Decode String", "Basic Calculator II", "Remove All Adjacent Duplicates"], boss: "Decode String", co: "Google" },
+                { name: "Sat", drill: ["Validate Stack Sequences", "Flatten Nested List Iterator", "Design Browser History"], boss: "Design Browser History", co: "Roblox" },
+                { name: "Sun", drill: ["Review Week 4", "Review Week 4", "Review Week 4"], boss: "Trapping Rain Water (Stack Sol)", co: "Hard" }
+            ]
+        },
+        // --- MONTH 2: CORE STRUCTURES ---
+        {
+            week: 5, title: "Binary Search",
+            tech: { 
+                be: ["Synchronized Keyword", "Volatile Variable", "Thread Lifecycle"], 
+                fe: ["useState Hook", "useEffect (Mount/Update)", "Cleanup Functions"], 
+                devops: ["Images vs Containers", "Docker CLI Commands", "Docker Daemon"], 
+                ai: ["Data Scaling (MinMax)", "One-Hot Encoding", "Train/Test Split"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Binary Search", "Search 2D Matrix", "Koko Eating Bananas"], boss: "Koko Eating Bananas", co: "Google" },
+                { name: "Tue", drill: ["Find Min in Rotated", "Search in Rotated Array", "Time Based Key-Value"], boss: "Search Rotated Array", co: "Meta" },
+                { name: "Wed", drill: ["Median of Two Sorted", "First Bad Version", "Search Insert Position"], boss: "Median Two Sorted", co: "Apple" },
+                { name: "Thu", drill: ["Find Peak Element", "Capacity To Ship Packages", "Split Array Largest Sum"], boss: "Find Peak Element", co: "Meta" },
+                { name: "Fri", drill: ["Guess Number", "Arranging Coins", "Single Element in Sorted Array"], boss: "Single Element", co: "Amazon" },
+                { name: "Sat", drill: ["Maximum Removable Characters", "Find K Closest Elements", "Minimize Max Distance to Gas Station"], boss: "K Closest Elements", co: "Meta" },
+                { name: "Sun", drill: ["Review Week 5", "Review Week 5", "Review Week 5"], boss: "Aggressive Cows (Custom)", co: "Hard" }
+            ]
+        },
+        {
+            week: 6, title: "Linked List",
+            tech: { 
+                be: ["ExecutorService", "CompletableFuture", "Race Conditions"], 
+                fe: ["useRef & Custom Hooks", "useMemo & useCallback", "React Rules of Hooks"], 
+                devops: ["Dockerfile Syntax", "Multi-stage Builds", "Layer Caching"], 
+                ai: ["Scikit-Learn Basics", "Model.fit() & predict()", "RMSE & Accuracy"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Reverse Linked List", "Merge Two Sorted", "Reorder List"], boss: "Reverse List", co: "Amazon" },
+                { name: "Tue", drill: ["Remove Nth Node", "Copy List Random Pointer", "Add Two Numbers"], boss: "Copy List", co: "Meta" },
+                { name: "Wed", drill: ["Linked List Cycle", "Find Duplicate Number", "LRU Cache"], boss: "LRU Cache", co: "Google" },
+                { name: "Thu", drill: ["Merge K Sorted Lists", "Reverse Nodes in k-Group", "Swap Nodes in Pairs"], boss: "Merge K Lists", co: "Amazon" },
+                { name: "Fri", drill: ["Palindrome Linked List", "Intersection of Two Linked Lists", "Sort List"], boss: "Sort List", co: "Meta" },
+                { name: "Sat", drill: ["Rotate List", "Partition List", "Odd Even Linked List"], boss: "Rotate List", co: "Microsoft" },
+                { name: "Sun", drill: ["Review Week 6", "Review Week 6", "Review Week 6"], boss: "Design Twitter (LL usage)", co: "Twitter" }
+            ]
+        },
+        {
+            week: 7, title: "Trees (BFS/DFS)",
+            tech: { 
+                be: ["SQL Normalization (1NF-3NF)", "ACID Properties", "Transaction Isolation"], 
+                fe: ["React Router v6 Setup", "Protected Routes", "Lazy Loading Components"], 
+                devops: ["Docker Networking Types", "Container Communication", "Port Mapping"], 
+                ai: ["Logistic Regression", "Sigmoid Function", "Confusion Matrix"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Invert Tree", "Max Depth", "Diameter of Tree"], boss: "Diameter of Tree", co: "Meta" },
+                { name: "Tue", drill: ["Balanced Binary Tree", "Same Tree", "Subtree of Another Tree"], boss: "Balanced Tree", co: "Amazon" },
+                { name: "Wed", drill: ["Level Order Traversal", "Right Side View", "Good Nodes"], boss: "Level Order", co: "Meta" },
+                { name: "Thu", drill: ["Validate BST", "Kth Smallest in BST", "Construct Tree from Pre/In"], boss: "Validate BST", co: "Amazon" },
+                { name: "Fri", drill: ["Lowest Common Ancestor", "Path Sum", "Path Sum II"], boss: "LCA", co: "Google" },
+                { name: "Sat", drill: ["Flatten Binary Tree", "Populating Next Right Pointers", "Symmetric Tree"], boss: "Flatten Tree", co: "Meta" },
+                { name: "Sun", drill: ["Review Week 7", "Review Week 7", "Review Week 7"], boss: "Serialize/Deserialize Tree", co: "Google" }
+            ]
+        },
+        {
+            week: 8, title: "Tries & Heaps",
+            tech: { 
+                be: ["Inner vs Outer Joins", "Indexing (B-Tree)", "Stored Procedures"], 
+                fe: ["Context API Provider", "useContext Hook", "Avoiding Prop Drilling"], 
+                devops: ["Docker Compose YAML", "Depends_on & Healthchecks", "Volume Mapping"], 
+                ai: ["Text Preprocessing", "Bag of Words", "Naive Bayes Classifier"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Implement Trie", "Design Add Search Words", "Word Search II"], boss: "Word Search II", co: "Google" },
+                { name: "Tue", drill: ["Kth Largest in Stream", "Last Stone Weight", "K Closest to Origin"], boss: "K Closest", co: "Amazon" },
+                { name: "Wed", drill: ["Kth Largest in Array", "Task Scheduler", "Design Twitter"], boss: "Task Scheduler", co: "Meta" },
+                { name: "Thu", drill: ["Find Median Data Stream", "Merge K Sorted Lists", "IPO"], boss: "Find Median", co: "Google" },
+                { name: "Fri", drill: ["Top K Frequent Words", "Ugly Number II", "Sort Characters By Frequency"], boss: "Top K Words", co: "Amazon" },
+                { name: "Sat", drill: ["Reorganize String", "Longest Happy String", "Car Pooling"], boss: "Reorganize String", co: "Amazon" },
+                { name: "Sun", drill: ["Review Week 8", "Review Week 8", "Review Week 8"], boss: "Meeting Rooms III", co: "Hard" }
+            ]
+        },
+        // --- MONTH 3: BACKEND DEPTH ---
+        {
+            week: 9, title: "Backtracking",
+            tech: { 
+                be: ["IOC Container & DI", "Bean Scopes", "ApplicationContext"], 
+                fe: ["React Query Basics", "Caching & Stale Time", "Axios Interceptors"], 
+                devops: ["GitHub Actions Workflows", "Triggers (Push/PR)", "Secrets Management"], 
+                ai: ["Pickle Serialization", "Joblib", "Versioning Models"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Subsets", "Combination Sum", "Permutations"], boss: "Permutations", co: "Google" },
+                { name: "Tue", drill: ["Subsets II", "Combination Sum II", "Word Search"], boss: "Word Search", co: "Amazon" },
+                { name: "Wed", drill: ["Palindrome Partitioning", "Letter Combinations", "N-Queens"], boss: "N-Queens", co: "Meta" },
+                { name: "Thu", drill: ["Sudoku Solver", "Combinations", "Restore IP Addresses"], boss: "Sudoku Solver", co: "Microsoft" },
+                { name: "Fri", drill: ["Matchsticks to Square", "Partition to K Equal Sum", "Beautiful Arrangement"], boss: "Partition K Equal", co: "Google" },
+                { name: "Sat", drill: ["Permutations II", "Different Ways to Add Parentheses", "Target Sum"], boss: "Target Sum", co: "Meta" },
+                { name: "Sun", drill: ["Review Week 9", "Review Week 9", "Review Week 9"], boss: "Word Search II (Backtracking)", co: "Hard" }
+            ]
+        },
+        {
+            week: 10, title: "Graphs (Basic)",
+            tech: { 
+                be: ["REST Principles", "HTTP Status Codes", "Idempotency"], 
+                fe: ["React Hook Form", "Zod Validation", "Controlled Components"], 
+                devops: ["Automated Testing in CI", "Linting Pipelines", "Build Artifacts"], 
+                ai: ["FastAPI Routes", "Pydantic Models", "Uvicorn Server"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Number of Islands", "Max Area of Island", "Clone Graph"], boss: "Number of Islands", co: "Amazon" },
+                { name: "Tue", drill: ["Walls and Gates", "Rotting Oranges", "Pacific Atlantic Water"], boss: "Rotting Oranges", co: "Amazon" },
+                { name: "Wed", drill: ["Surrounded Regions", "Course Schedule", "Course Schedule II"], boss: "Course Schedule", co: "Meta" },
+                { name: "Thu", drill: ["Redundant Connection", "Graph Valid Tree", "Number of Connected Components"], boss: "Redundant Conn", co: "Google" },
+                { name: "Fri", drill: ["Word Ladder", "Word Ladder II", "Evaluate Division"], boss: "Word Ladder", co: "Amazon" },
+                { name: "Sat", drill: ["Accounts Merge", "Shortest Bridge", "01 Matrix"], boss: "Accounts Merge", co: "Meta" },
+                { name: "Sun", drill: ["Review Week 10", "Review Week 10", "Review Week 10"], boss: "Parallel Courses", co: "Hard" }
+            ]
+        },
+        {
+            week: 11, title: "Graphs (Advanced)",
+            tech: { 
+                be: ["JPA Entities & Annotations", "Repository Pattern", "N+1 Problem"], 
+                fe: ["Code Splitting", "React.lazy & Suspense", "Memoization Patterns"], 
+                devops: ["AWS S3 Buckets", "Presigned URLs", "IAM Policies"], 
+                ai: ["Spring RestTemplate", "JSON Parsing in Java", "API Integration"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Network Delay Time", "Cheapest Flights K Stops", "Min Cost to Connect Points"], boss: "Network Delay", co: "Google" },
+                { name: "Tue", drill: ["Reconstruct Itinerary", "Swim in Rising Water", "Alien Dictionary"], boss: "Alien Dictionary", co: "Meta" },
+                { name: "Wed", drill: ["Path with Maximum Probability", "Find the City Smallest Neighbors", "Snakes and Ladders"], boss: "Cheapest Flights", co: "Google" },
+                { name: "Thu", drill: ["Checking Existence of Edge Length", "Optimize Water Distribution", "Critical Connections"], boss: "Critical Connections", co: "Amazon" },
+                { name: "Fri", drill: ["Longest Increasing Path in Matrix", "Making A Large Island", "Most Stones Removed"], boss: "Longest Increasing Path", co: "Google" },
+                { name: "Sat", drill: ["Open the Lock", "Minimum Genetic Mutation", "Shortest Path in Binary Matrix"], boss: "Open Lock", co: "Google" },
+                { name: "Sun", drill: ["Review Week 11", "Review Week 11", "Review Week 11"], boss: "Bus Routes", co: "Hard" }
+            ]
+        },
+        {
+            week: 12, title: "1D DP",
+            tech: { 
+                be: ["Spring Actuator", "App Properties/Profiles", "SLF4J Logging"], 
+                fe: ["Tailwind Utility Classes", "Responsive Design", "Dark Mode Config"], 
+                devops: ["AWS VPC Basics", "Public vs Private Subnets", "Security Groups"], 
+                ai: ["KNN Algorithm", "Euclidean Distance", "Hyperparameter Tuning"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Climbing Stairs", "Min Cost Climbing", "House Robber"], boss: "House Robber", co: "Google" },
+                { name: "Tue", drill: ["House Robber II", "Longest Palindromic Substring", "Palindromic Substrings"], boss: "Longest Palindrome", co: "Meta" },
+                { name: "Wed", drill: ["Decode Ways", "Coin Change", "Maximum Product Subarray"], boss: "Coin Change", co: "Amazon" },
+                { name: "Thu", drill: ["Word Break", "Longest Increasing Subsequence", "Partition Equal Subset Sum"], boss: "Word Break", co: "Meta" },
+                { name: "Fri", drill: ["Triangle", "Delete and Earn", "Combination Sum IV"], boss: "LIS", co: "Google" },
+                { name: "Sat", drill: ["Perfect Squares", "Minimum Ticket Cost", "Domino and Tromino Tiling"], boss: "Perfect Squares", co: "Amazon" },
+                { name: "Sun", drill: ["Review Week 12", "Review Week 12", "Review Week 12"], boss: "Word Break II", co: "Hard" }
+            ]
+        },
+        // --- MONTH 4: SYSTEM DESIGN & MICROSERVICES ---
+        {
+            week: 13, title: "2D DP",
+            tech: { 
+                be: ["Spring Security FilterChain", "AuthenticationManager", "SecurityContext"], 
+                fe: ["Redux Toolkit Slices", "Redux Thunks", "Store Configuration"], 
+                devops: ["AWS RDS Setup", "Connection Strings", "Multi-AZ Deployments"], 
+                ai: ["Decision Trees", "Random Forest", "Ensemble Methods"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Unique Paths", "Longest Common Subsequence", "Best Time to Buy Stock IV"], boss: "LCS", co: "Amazon" },
+                { name: "Tue", drill: ["Target Sum", "Interleaving String", "Edit Distance"], boss: "Edit Distance", co: "Google" },
+                { name: "Wed", drill: ["Burst Balloons", "Distinct Subsequences", "Longest Increasing Path"], boss: "Burst Balloons", co: "Amazon" },
+                { name: "Thu", drill: ["Regular Expression Matching", "Wildcard Matching", "Maximal Square"], boss: "Regex Matching", co: "Meta" },
+                { name: "Fri", drill: ["Coin Change II", "Uncrossed Lines", "Minimum Path Sum"], boss: "Min Path Sum", co: "Google" },
+                { name: "Sat", drill: ["Dungeon Game", "Cherry Pickup", "Number of Ways to Form Target String"], boss: "Dungeon Game", co: "Hard" },
+                { name: "Sun", drill: ["Review Week 13", "Review Week 13", "Review Week 13"], boss: "Russian Doll Envelopes", co: "Hard" }
+            ]
+        },
+        {
+            week: 14, title: "Greedy",
+            tech: { 
+                be: ["JWT Token Generation", "Stateless Authentication", "Refresh Tokens"], 
+                fe: ["Jest Unit Testing", "React Testing Library", "Mocking API Calls"], 
+                devops: ["ECR Registry", "Image Tagging", "Docker Push"], 
+                ai: ["Dockerizing Python", "requirements.txt", "Python Base Images"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Maximum Subarray", "Jump Game", "Jump Game II"], boss: "Jump Game", co: "Amazon" },
+                { name: "Tue", drill: ["Gas Station", "Hand of Straights", "Merge Triplets"], boss: "Gas Station", co: "Google" },
+                { name: "Wed", drill: ["Partition Labels", "Valid Parenthesis String", "Candy"], boss: "Partition Labels", co: "Amazon" },
+                { name: "Thu", drill: ["Wiggle Subsequence", "Remove K Digits", "Increasing Triplet Subsequence"], boss: "Candy", co: "Google" },
+                { name: "Fri", drill: ["Minimum Number of Arrows", "Non-overlapping Intervals", "Boats to Save People"], boss: "Merge Triplets", co: "Meta" },
+                { name: "Sat", drill: ["Two City Scheduling", "Queue Reconstruction by Height", "Task Scheduler"], boss: "Task Scheduler", co: "Meta" },
+                { name: "Sun", drill: ["Review Week 14", "Review Week 14", "Review Week 14"], boss: "Create Maximum Number", co: "Hard" }
+            ]
+        },
+        {
+            week: 15, title: "Intervals",
+            tech: { 
+                be: ["Eureka Server", "Service Discovery", "Config Server"], 
+                fe: ["Next.js Pages/Routing", "SSR vs CSR", "GetStaticProps"], 
+                devops: ["Nginx Config", "Reverse Proxy", "Load Balancing"], 
+                ai: ["Tokenization", "Stop Words", "Lemmatization"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Insert Interval", "Merge Intervals", "Non-overlapping Intervals"], boss: "Merge Intervals", co: "Google" },
+                { name: "Tue", drill: ["Meeting Rooms", "Meeting Rooms II", "Minimum Interval to Include"], boss: "Meeting Rooms II", co: "Meta" },
+                { name: "Wed", drill: ["Data Stream as Disjoint Intervals", "Summary Ranges", "Range Module"], boss: "Data Stream", co: "Google" },
+                { name: "Thu", drill: ["Teemo Attacking", "Interval List Intersections", "Employee Free Time"], boss: "Employee Free Time", co: "Amazon" },
+                { name: "Fri", drill: ["My Calendar I", "My Calendar II", "My Calendar III"], boss: "My Calendar", co: "Google" },
+                { name: "Sat", drill: ["Car Pooling", "Video Stitching", "Remove Covered Intervals"], boss: "Car Pooling", co: "Meta" },
+                { name: "Sun", drill: ["Review Week 15", "Review Week 15", "Review Week 15"], boss: "Skyline Problem", co: "Hard" }
+            ]
+        },
+        {
+            week: 16, title: "OOD / LLD",
+            tech: { 
+                be: ["API Gateway Pattern", "Resilience4j Circuit Breaker", "Feign Client"], 
+                fe: ["Connecting Full Stack", "Env Variables", "CORS Handling"], 
+                devops: ["K8s Pods", "K8s Services (ClusterIP)", "K8s Nodes"], 
+                ai: ["TF-IDF", "Sentiment Polarity", "Model Training Pipeline"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Design Parking Lot", "Design Singleton", "Design Factory"], boss: "Design Parking", co: "Amazon" },
+                { name: "Tue", drill: ["Design LRU Cache", "Design LFU Cache", "Design HashMap"], boss: "LRU Cache", co: "Meta" },
+                { name: "Wed", drill: ["Design Twitter", "Design Browser History", "Design Underground System"], boss: "Design Twitter", co: "Twitter" },
+                { name: "Thu", drill: ["Design Movie Rental", "Design Leaderboard", "Design Tic-Tac-Toe"], boss: "Tic Tac Toe", co: "Meta" },
+                { name: "Fri", drill: ["Design File System", "Design Search Autocomplete", "Design Snake Game"], boss: "Search Auto", co: "Google" },
+                { name: "Sat", drill: ["Design Bank", "Design HashSet", "Flatten 2D Vector"], boss: "Design Bank", co: "Amazon" },
+                { name: "Sun", drill: ["Review Week 16", "Review Week 16", "Review Week 16"], boss: "Design Excel Sum", co: "Hard" }
+            ]
+        },
+        // --- MONTH 5: SCALING & CAPSTONE ---
+        {
+            week: 17, title: "Sys Design I",
+            tech: { 
+                be: ["Zipkin Tracing", "Sleuth Logging", "Distributed IDs"], 
+                fe: ["List Virtualization", "Infinite Scroll", "Debouncing/Throttling"], 
+                devops: ["K8s Deployment.yaml", "K8s Service.yaml", "Kubectl Apply"], 
+                ai: ["Vector Embeddings", "Vector Search", "Pinecone Setup"] 
+            },
+            days: [
+                { name: "Mon", drill: ["HLD: Load Balancing", "HLD: Caching", "HLD: CAP Theorem"], boss: "Read HLD Primer", co: "Theory" },
+                { name: "Tue", drill: ["HLD: Consistent Hashing", "HLD: Database Sharding", "HLD: Leader Election"], boss: "Read DynamoDB", co: "Theory" },
+                { name: "Wed", drill: ["Design URL Shortener (TinyURL)", "Design Pastebin", "Design Rate Limiter"], boss: "Design TinyURL", co: "System" },
+                { name: "Thu", drill: ["Design Unique ID Generator", "Design Key-Value Store", "Design Web Crawler"], boss: "Design KV Store", co: "System" },
+                { name: "Fri", drill: ["Design Notification System", "Design Chat System (WhatsApp)", "Design News Feed"], boss: "Design WhatsApp", co: "Meta" },
+                { name: "Sat", drill: ["Design Autocomplete", "Design YouTube/Netflix", "Design Google Drive"], boss: "Design YouTube", co: "Google" },
+                { name: "Sun", drill: ["Review Week 17", "Review Week 17", "Review Week 17"], boss: "Design Uber", co: "Uber" }
+            ]
+        },
+        {
+            week: 18, title: "Sys Design II",
+            tech: { 
+                be: ["Factory Pattern", "Strategy Pattern", "Observer Pattern"], 
+                fe: ["Dashboard Layouts", "Chart.js/Recharts", "Data Visualization"], 
+                devops: ["Kubectl Logs", "Kubectl Exec", "Describe Pod"], 
+                ai: ["OpenAI API Keys", "Prompt Engineering", "Token Limits"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Design Search Engine", "Design Payment System", "Design Ticketmaster"], boss: "Design Search", co: "Google" },
+                { name: "Tue", drill: ["Design Metrics Service", "Design Logging System", "Design Distributed Cache"], boss: "Design Metrics", co: "Datadog" },
+                { name: "Wed", drill: ["Design Content Delivery Network", "Design Map Reduce", "Design GFS"], boss: "Design GFS", co: "Google" },
+                { name: "Thu", drill: ["Design Top K Elements", "Design Ad Click Aggregator", "Design Flash Sale"], boss: "Design Flash Sale", co: "Amazon" },
+                { name: "Fri", drill: ["Design Hotel Booking", "Design Airline Booking", "Design Parking Garage"], boss: "Design Hotel", co: "Booking" },
+                { name: "Sat", drill: ["Design Tinder", "Design Nearby Friends", "Design Location Privacy"], boss: "Design Tinder", co: "Match" },
+                { name: "Sun", drill: ["Review Week 18", "Review Week 18", "Review Week 18"], boss: "Design Crawler", co: "Google" }
+            ]
+        },
+        {
+            week: 19, title: "Math & Bit",
+            tech: { 
+                be: ["WebSockets Config", "STOMP Protocol", "Real-time Messaging"], 
+                fe: ["WebSocket Client", "Chat UI Component", "Live Updates"], 
+                devops: ["Prometheus Scraping", "Grafana Dashboards", "Alert Manager"], 
+                ai: ["RAG Architecture", "Context Injection", "LangChain Basics"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Single Number", "Number of 1 Bits", "Counting Bits"], boss: "Single Number", co: "Amazon" },
+                { name: "Tue", drill: ["Reverse Bits", "Missing Number", "Sum of Two Integers"], boss: "Sum Two Integers", co: "Meta" },
+                { name: "Wed", drill: ["Reverse Integer", "Pow(x, n)", "Multiply Strings"], boss: "Pow(x,n)", co: "Google" },
+                { name: "Thu", drill: ["Happy Number", "Plus One", "Sqrt(x)"], boss: "Happy Number", co: "Amazon" },
+                { name: "Fri", drill: ["Factorial Trailing Zeroes", "Excel Sheet Column Title", "Divide Two Integers"], boss: "Divide Integers", co: "Meta" },
+                { name: "Sat", drill: ["Max Points on a Line", "Permutation Sequence", "Fraction to Recurring Decimal"], boss: "Max Points Line", co: "Hard" },
+                { name: "Sun", drill: ["Review Week 19", "Review Week 19", "Review Week 19"], boss: "Integer to English Words", co: "Hard" }
+            ]
+        },
+        {
+            week: 20, title: "Capstone Core",
+            tech: { 
+                be: ["Final Backend Polish", "Redis Caching", "API Optimization"], 
+                fe: ["WCAG Accessibility", "ARIA Labels", "Keyboard Nav"], 
+                devops: ["Route53 DNS", "Load Balancers (ALB)", "SSL/TLS"], 
+                ai: ["End-to-End API Test", "Latency Optimization", "Response Caching"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Project: Auth Flow", "Project: DB Schema", "Code: JWT Implementation"], boss: "Build Login", co: "Project" },
+                { name: "Tue", drill: ["Project: API Design", "Project: Controllers", "Code: CRUD Operations"], boss: "Build APIs", co: "Project" },
+                { name: "Wed", drill: ["Project: React Router", "Project: State Config", "Code: UI Layout"], boss: "Build Dashboard", co: "Project" },
+                { name: "Thu", drill: ["Project: Connect AI", "Project: FastAPI", "Code: Python Script"], boss: "Connect AI", co: "Project" },
+                { name: "Fri", drill: ["Project: Dockerfile", "Project: Compose", "Code: Containerize"], boss: "Docker Run", co: "Project" },
+                { name: "Sat", drill: ["Project: Testing", "Project: Bug Fixes", "Code: Unit Tests"], boss: "Run Tests", co: "Project" },
+                { name: "Sun", drill: ["Review Week 20", "Review Week 20", "Review Week 20"], boss: "End to End Test", co: "Project" }
+            ]
+        },
+        // --- MONTH 6: DEPLOY & PREP ---
+        {
+            week: 21, title: "Deployment",
+            tech: { 
+                be: ["Prod Profile Config", "DB Migration", "Log Aggregation"], 
+                fe: ["Prod Build Optimization", "Asset Minification", "SEO Meta Tags"], 
+                devops: ["Blue/Green Deploy", "Rolling Updates", "Health Checks"], 
+                ai: ["Deploying Inference", "Containerizing Model", "GPU vs CPU"] 
+            },
+            days: [
+                { name: "Mon", drill: ["AWS: EC2 Setup", "AWS: RDS Setup", "SSH Access"], boss: "Launch EC2", co: "Cloud" },
+                { name: "Tue", drill: ["AWS: S3 Config", "AWS: IAM Roles", "Security Groups"], boss: "Config S3", co: "Cloud" },
+                { name: "Wed", drill: ["CI/CD: GitHub Actions", "Pipeline: Build", "Pipeline: Test"], boss: "Build Pipeline", co: "DevOps" },
+                { name: "Thu", drill: ["Docker: Push to ECR", "Deploy: Pull on EC2", "Run: Nginx"], boss: "Deploy App", co: "DevOps" },
+                { name: "Fri", drill: ["Domain: Route53", "SSL: Certbot", "HTTPS Config"], boss: "Go Live", co: "DevOps" },
+                { name: "Sat", drill: ["Monitoring: Grafana", "Logging: CloudWatch", "Alerts"], boss: "Setup Monitor", co: "DevOps" },
+                { name: "Sun", drill: ["Review Week 21", "Review Week 21", "Review Week 21"], boss: "Disaster Recovery", co: "Theory" }
+            ]
+        },
+        {
+            week: 22, title: "Review Hard",
+            tech: { 
+                be: ["Review Java Weaknesses", "JVM Tuning", "Profiling"], 
+                fe: ["Review JS Tricky Parts", "Closures/Hoisting", "Event Delegation"], 
+                devops: ["Full Pipeline Audit", "Artifact Promotion", "Rollbacks"], 
+                ai: ["Load Testing (Locust)", "Throughput Analysis", "Scaling AI"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Trapping Rain Water", "Word Ladder II", "Median Two Sorted"], boss: "Trapping Rain", co: "Hard" },
+                { name: "Tue", drill: ["Merge K Lists", "Reverse Nodes k-Group", "Largest Rectangle"], boss: "Merge K Lists", co: "Hard" },
+                { name: "Wed", drill: ["N-Queens II", "Sudoku Solver", "Unique Paths III"], boss: "Sudoku Solver", co: "Hard" },
+                { name: "Thu", drill: ["Sliding Window Max", "Min Window Substring", "Concatenated Words"], boss: "Sliding Window", co: "Hard" },
+                { name: "Fri", drill: ["Alien Dictionary", "Bus Routes", "Word Search II"], boss: "Bus Routes", co: "Hard" },
+                { name: "Sat", drill: ["Skyline Problem", "Max Points on Line", "Swim in Rising Water"], boss: "Skyline", co: "Hard" },
+                { name: "Sun", drill: ["Review Week 22", "Review Week 22", "Review Week 22"], boss: "Google Mock", co: "Exam" }
+            ]
+        },
+        {
+            week: 23, title: "Mock Interviews",
+            tech: { 
+                be: ["Spring Internals", "AOP & Proxies", "Transaction Mgmt"], 
+                fe: ["React Lifecycle Deep Dive", "Performance Profiling", "Bundle Analysis"], 
+                devops: ["IaC Concepts", "Terraform Init/Apply", "State Files"], 
+                ai: ["Swagger UI Docs", "OpenAPI Spec", "API Versioning"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Pramp Mock 1", "Behavioral: Conflict", "Sys Design: Twitter"], boss: "Mock Interview", co: "Prep" },
+                { name: "Tue", drill: ["Peer Mock 1", "Behavioral: Failure", "Sys Design: Uber"], boss: "Mock Interview", co: "Prep" },
+                { name: "Wed", drill: ["Pramp Mock 2", "Behavioral: Leadership", "Sys Design: WhatsApp"], boss: "Mock Interview", co: "Prep" },
+                { name: "Thu", drill: ["Peer Mock 2", "Behavioral: Deadline", "Sys Design: YouTube"], boss: "Mock Interview", co: "Prep" },
+                { name: "Fri", drill: ["Pramp Mock 3", "Behavioral: Weakness", "Sys Design: TinyURL"], boss: "Mock Interview", co: "Prep" },
+                { name: "Sat", drill: ["Full Mock Day", "Coding Round", "System Design Round"], boss: "Full Loop", co: "Prep" },
+                { name: "Sun", drill: ["Rest & Review", "Notes Review", "Sleep"], boss: "Relax", co: "Health" }
+            ]
+        },
+        {
+            week: 24, title: "Final Polish",
+            tech: { 
+                be: ["Resume Keywords (ATS)", "Project Descriptions", "Impact Statements"], 
+                fe: ["Portfolio Cleanup", "GitHub Readme Polish", "Live Demo Links"], 
+                devops: ["OWASP Top 10", "Container Scanning", "Secrets Rotation"], 
+                ai: ["Model Explainability", "Demo Recording", "Portfolio Update"] 
+            },
+            days: [
+                { name: "Mon", drill: ["Resume Review", "LinkedIn Update", "Apply 5 Jobs"], boss: "Apply Amazon", co: "Career" },
+                { name: "Tue", drill: ["Cover Letters", "Portfolio Website", "Apply 5 Jobs"], boss: "Apply Google", co: "Career" },
+                { name: "Wed", drill: ["Cold Emails", "Networking", "Apply 5 Jobs"], boss: "Apply Meta", co: "Career" },
+                { name: "Thu", drill: ["Behavioral Grid", "Star Method", "Apply 5 Jobs"], boss: "Apply Netflix", co: "Career" },
+                { name: "Fri", drill: ["Mock Negotiation", "Salary Research", "Apply 5 Jobs"], boss: "Apply Apple", co: "Career" },
+                { name: "Sat", drill: ["Final Algo Review", "Cheat Sheets", "Relax"], boss: "You are Ready", co: "Life" },
+                { name: "Sun", drill: ["THE END", "CONGRATS", "GO GET IT"], boss: "Victory", co: "Win" }
+            ]
+        }
+    ];
+
+    // === APP LOGIC ===
+    function renderApp() {
+        const app = document.getElementById('app');
+        app.innerHTML = '';
+        const saved = JSON.parse(localStorage.getItem('maang24')) || {};
+        let total = 0, completed = 0;
+
+        roadmapData.forEach((week, wIdx) => {
+            let weekHtml = `
+                <div class="week-card" id="week-${wIdx}">
+                    <div class="week-header" onclick="toggleWeek(${wIdx})">
+                        <span>WEEK ${week.week}: ${week.title}</span>
+                        <span style="font-size:0.8rem; font-weight:400">Expand ▼</span>
+                    </div>
+                    <div class="week-content">
+                        <div class="tech-grid">
+                            <div class="tech-col">
+                                <span class="tech-label">Backend</span>
+                                <ul class="tech-list">${week.tech.be.map(t => `<li>${t}</li>`).join('')}</ul>
+                            </div>
+                            <div class="tech-col">
+                                <span class="tech-label">Frontend</span>
+                                <ul class="tech-list">${week.tech.fe.map(t => `<li>${t}</li>`).join('')}</ul>
+                            </div>
+                            <div class="tech-col">
+                                <span class="tech-label">DevOps</span>
+                                <ul class="tech-list">${week.tech.devops.map(t => `<li>${t}</li>`).join('')}</ul>
+                            </div>
+                            <div class="tech-col">
+                                <span class="tech-label">AI/ML</span>
+                                <ul class="tech-list">${week.tech.ai.map(t => `<li>${t}</li>`).join('')}</ul>
+                            </div>
+                        </div>
+                        <div class="days-grid">`;
+
+            week.days.forEach((day, dIdx) => {
+                let drillHtml = day.drill.map((p, pIdx) => {
+                    const pid = `w${wIdx}-d${dIdx}-p${pIdx}`;
+                    const checked = saved[pid] ? 'checked' : '';
+                    total++; if(checked) completed++;
+                    // LeetCode Link Logic (slugify)
+                    const slug = p.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                    const url = `https://leetcode.com/problems/${slug}/`;
+                    
+                    return `
+                        <div class="prob-row">
+                            <input type="checkbox" id="${pid}" ${checked} onchange="toggle('${pid}')">
+                            <a href="${url}" target="_blank" class="prob-link">${p}</a>
+                        </div>`;
+                }).join('');
+
+                const bid = `w${wIdx}-d${dIdx}-boss`;
+                const bChecked = saved[bid] ? 'checked' : '';
+                total++; if(bChecked) completed++;
+                const bSlug = day.boss.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                
+                weekHtml += `
+                    <div class="day-card">
+                        <div class="day-title">${day.name}</div>
+                        ${drillHtml}
+                        <div class="boss-box">
+                            <span class="boss-label">BOSS: ${day.co}</span>
+                            <div class="prob-row" style="border:none">
+                                <input type="checkbox" id="${bid}" ${bChecked} onchange="toggle('${bid}')">
+                                <a href="https://leetcode.com/problems/${bSlug}/" target="_blank" class="prob-link" style="font-weight:700">${day.boss}</a>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+
+            weekHtml += `</div></div></div>`;
+            app.innerHTML += weekHtml;
+        });
+
+        const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+        document.getElementById('progressBar').style.width = `${percent}%`;
+        document.getElementById('statsText').innerText = `${percent}% Complete`;
+    }
+
+    function toggle(id) {
+        const saved = JSON.parse(localStorage.getItem('maang24')) || {};
+        saved[id] = !saved[id];
+        localStorage.setItem('maang24', JSON.stringify(saved));
+        renderApp();
+        const weekIdx = id.split('-')[0].replace('w', '');
+        setTimeout(() => document.getElementById(`week-${weekIdx}`).classList.add('active'), 0);
+    }
+
+    function toggleWeek(idx) {
+        document.getElementById(`week-${idx}`).classList.toggle('active');
+    }
+
+    function resetProgress() {
+        if(confirm("Reset entire 6-month progress?")) {
+            localStorage.removeItem('maang24');
+            renderApp();
+        }
+    }
+
+    renderApp();
+</script>
+</body>
+</html>
