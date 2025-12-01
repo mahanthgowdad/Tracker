@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAANG 24-Week Tracker + Notes</title>
+    <title>MAANG 24-Week Ultimate Tracker</title>
     <style>
         :root {
             --bg: #f8fafc;
@@ -14,6 +14,9 @@
             --border: #e2e8f0;
             --note-bg: #fffbeb;
             --note-border: #fcd34d;
+            --prep-bg: #f0fdf4;
+            --prep-border: #86efac;
+            --prep-text: #166534;
         }
 
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #1e293b; }
@@ -45,6 +48,16 @@
         .week-content { display: none; padding: 1.5rem; }
         .week-card.active .week-content { display: block; }
 
+        /* Prep Box */
+        .prep-box {
+            background: var(--prep-bg); border: 1px solid var(--prep-border); color: var(--prep-text);
+            padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;
+        }
+        .prep-link {
+            background: #166534; color: white; text-decoration: none; padding: 6px 12px; border-radius: 4px; font-size: 0.85rem; font-weight: 600;
+        }
+        .prep-link:hover { opacity: 0.9; }
+
         /* Tech Panel */
         .tech-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;
@@ -69,33 +82,17 @@
         .boss-box { margin-top: 10px; background: #fff1f2; padding: 8px; border-radius: 4px; border: 1px solid #fecdd3; }
         .boss-label { font-size: 0.7rem; font-weight: 800; color: #be123c; text-transform: uppercase; display: block; }
 
-        /* --- NOTES SECTION --- */
-        .notes-area {
-            margin-top: 1.5rem;
-            border-top: 1px solid var(--border);
-            padding-top: 1rem;
-        }
+        /* Notes */
+        .notes-area { margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
         .notes-header { font-size: 0.9rem; font-weight: 700; color: var(--secondary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 6px; }
         .custom-textarea {
-            width: 100%;
-            height: 100px;
-            padding: 12px;
-            border: 1px solid var(--note-border);
-            border-radius: 6px;
-            background-color: var(--note-bg);
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.9rem;
-            resize: vertical;
-            box-sizing: border-box;
-            outline: none;
-            line-height: 1.4;
+            width: 100%; height: 80px; padding: 12px; border: 1px solid var(--note-border); border-radius: 6px;
+            background-color: var(--note-bg); font-family: monospace; font-size: 0.9rem; resize: vertical; outline: none;
         }
-        .custom-textarea:focus { border-color: #f59e0b; box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2); }
         .save-indicator { font-size: 0.75rem; color: var(--success); margin-left: auto; opacity: 0; transition: opacity 0.5s; }
 
         input[type="checkbox"] { accent-color: var(--success); cursor: pointer; }
         
-        /* Utility */
         .controls { text-align: center; margin: 2rem 0; }
         button { padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; }
         button.outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); margin-left: 10px; }
@@ -103,7 +100,7 @@
         @media print {
             .week-content { display: block !important; }
             .week-card { break-inside: avoid; }
-            .header, .controls, .notes-area { display: none; } /* Hide notes in print to save paper, or remove class to show */
+            .header, .controls, .notes-area { display: none; }
         }
     </style>
 </head>
@@ -111,8 +108,8 @@
 
 <div class="header">
     <div>
-        <h1>MAANG 24-Week Tracker</h1>
-        <span style="font-size: 0.8rem; opacity: 0.8;">Full Stack • AI • DevOps • DSA</span>
+        <h1>MAANG 24-Week Ultimate Tracker</h1>
+        <span style="font-size: 0.8rem; opacity: 0.8;">Full Stack • AI • DevOps • DSA • Interview Prep</span>
     </div>
     <div class="progress-box">
         <div id="statsText">0% Complete</div>
@@ -132,6 +129,7 @@
     const roadmapData = [
         {
             week: 1, title: "Arrays & Hashing",
+            prep: { title: "Java Core Interview Questions", url: "https://www.edureka.co/blog/interview-questions/java-interview-questions/" },
             tech: { 
                 be: ["Stack vs Heap Memory", "String Pool & Immutability", "Garbage Collection Basics"], 
                 fe: ["ES6: Arrow Functions", "ES6: Destructuring & Spread", "ES6: Modules (Import/Export)"], 
@@ -150,6 +148,7 @@
         },
         {
             week: 2, title: "Two Pointers",
+            prep: { title: "Javascript & OOPs Questions", url: "https://github.com/sudheerj/javascript-interview-questions" },
             tech: { 
                 be: ["Interfaces vs Abstract Classes", "Polymorphism Types", "Constructors & 'super'"], 
                 fe: ["Event Loop & Call Stack", "Callbacks vs Promises", "Microtask Queue"], 
@@ -168,6 +167,7 @@
         },
         {
             week: 3, title: "Sliding Window",
+            prep: { title: "Java Collections Interview Qs", url: "https://www.javatpoint.com/java-collections-interview-questions" },
             tech: { 
                 be: ["HashMap Internals (Buckets)", "Equals() & HashCode()", "ArrayList vs LinkedList"], 
                 fe: ["DOM Manipulation", "Event Bubbling/Capturing", "Virtual DOM Concept"], 
@@ -186,6 +186,7 @@
         },
         {
             week: 4, title: "Stack",
+            prep: { title: "Java 8 Features & Stream API", url: "https://www.digitalocean.com/community/tutorials/java-8-interview-questions-and-answers" },
             tech: { 
                 be: ["Streams API (Filter/Map)", "Lambda Expressions", "Optional Class Usage"], 
                 fe: ["React JSX & Components", "Props vs State", "Unidirectional Data Flow"], 
@@ -202,9 +203,9 @@
                 { name: "Sun", drill: ["Review Week 4", "Review Week 4", "Review Week 4"], boss: "Trapping Rain Water (Stack Sol)", co: "Hard" }
             ]
         },
-        // --- MONTH 2: CORE STRUCTURES ---
         {
             week: 5, title: "Binary Search",
+            prep: { title: "Multithreading & Concurrency Qs", url: "https://www.javatpoint.com/java-multithreading-interview-questions" },
             tech: { 
                 be: ["Synchronized Keyword", "Volatile Variable", "Thread Lifecycle"], 
                 fe: ["useState Hook", "useEffect (Mount/Update)", "Cleanup Functions"], 
@@ -223,6 +224,7 @@
         },
         {
             week: 6, title: "Linked List",
+            prep: { title: "SQL Design & Normalization", url: "https://www.geeksforgeeks.org/sql-interview-questions/" },
             tech: { 
                 be: ["ExecutorService", "CompletableFuture", "Race Conditions"], 
                 fe: ["useRef & Custom Hooks", "useMemo & useCallback", "React Rules of Hooks"], 
@@ -241,6 +243,7 @@
         },
         {
             week: 7, title: "Trees (BFS/DFS)",
+            prep: { title: "Advanced SQL: Joins & Indexes", url: "https://www.javatpoint.com/sql-join-interview-questions" },
             tech: { 
                 be: ["SQL Normalization (1NF-3NF)", "ACID Properties", "Transaction Isolation"], 
                 fe: ["React Router v6 Setup", "Protected Routes", "Lazy Loading Components"], 
@@ -259,6 +262,7 @@
         },
         {
             week: 8, title: "Tries & Heaps",
+            prep: { title: "React Interview Questions", url: "https://github.com/sudheerj/reactjs-interview-questions" },
             tech: { 
                 be: ["Inner vs Outer Joins", "Indexing (B-Tree)", "Stored Procedures"], 
                 fe: ["Context API Provider", "useContext Hook", "Avoiding Prop Drilling"], 
@@ -275,9 +279,9 @@
                 { name: "Sun", drill: ["Review Week 8", "Review Week 8", "Review Week 8"], boss: "Meeting Rooms III", co: "Hard" }
             ]
         },
-        // --- MONTH 3: BACKEND DEPTH ---
         {
             week: 9, title: "Backtracking",
+            prep: { title: "Spring Boot Interview Guide", url: "https://www.baeldung.com/spring-boot-interview-questions" },
             tech: { 
                 be: ["IOC Container & DI", "Bean Scopes", "ApplicationContext"], 
                 fe: ["React Query Basics", "Caching & Stale Time", "Axios Interceptors"], 
@@ -296,6 +300,7 @@
         },
         {
             week: 10, title: "Graphs (Basic)",
+            prep: { title: "REST API Design Qs", url: "https://www.paradigmadigital.com/dev/rest-api-interview-questions/" },
             tech: { 
                 be: ["REST Principles", "HTTP Status Codes", "Idempotency"], 
                 fe: ["React Hook Form", "Zod Validation", "Controlled Components"], 
@@ -314,6 +319,7 @@
         },
         {
             week: 11, title: "Graphs (Advanced)",
+            prep: { title: "JPA & Hibernate Interview Qs", url: "https://www.javatpoint.com/hibernate-interview-questions" },
             tech: { 
                 be: ["JPA Entities & Annotations", "Repository Pattern", "N+1 Problem"], 
                 fe: ["Code Splitting", "React.lazy & Suspense", "Memoization Patterns"], 
@@ -332,6 +338,7 @@
         },
         {
             week: 12, title: "1D DP",
+            prep: { title: "React Router Docs (Guides)", url: "https://v5.reactrouter.com/web/guides/quick-start" },
             tech: { 
                 be: ["Spring Actuator", "App Properties/Profiles", "SLF4J Logging"], 
                 fe: ["Tailwind Utility Classes", "Responsive Design", "Dark Mode Config"], 
@@ -348,9 +355,9 @@
                 { name: "Sun", drill: ["Review Week 12", "Review Week 12", "Review Week 12"], boss: "Word Break II", co: "Hard" }
             ]
         },
-        // --- MONTH 4: SYSTEM DESIGN & MICROSERVICES ---
         {
             week: 13, title: "2D DP",
+            prep: { title: "Spring Security Qs", url: "https://www.baeldung.com/spring-security-interview-questions" },
             tech: { 
                 be: ["Spring Security FilterChain", "AuthenticationManager", "SecurityContext"], 
                 fe: ["Redux Toolkit Slices", "Redux Thunks", "Store Configuration"], 
@@ -369,6 +376,7 @@
         },
         {
             week: 14, title: "Greedy",
+            prep: { title: "JWT Concepts", url: "https://jwt.io/introduction" },
             tech: { 
                 be: ["JWT Token Generation", "Stateless Authentication", "Refresh Tokens"], 
                 fe: ["Jest Unit Testing", "React Testing Library", "Mocking API Calls"], 
@@ -387,6 +395,7 @@
         },
         {
             week: 15, title: "Intervals",
+            prep: { title: "Microservices Interview Qs", url: "https://www.edureka.co/blog/interview-questions/microservices-interview-questions/" },
             tech: { 
                 be: ["Eureka Server", "Service Discovery", "Config Server"], 
                 fe: ["Next.js Pages/Routing", "SSR vs CSR", "GetStaticProps"], 
@@ -405,6 +414,7 @@
         },
         {
             week: 16, title: "OOD / LLD",
+            prep: { title: "API Gateway Pattern", url: "https://microservices.io/patterns/apigateway.html" },
             tech: { 
                 be: ["API Gateway Pattern", "Resilience4j Circuit Breaker", "Feign Client"], 
                 fe: ["Connecting Full Stack", "Env Variables", "CORS Handling"], 
@@ -421,9 +431,9 @@
                 { name: "Sun", drill: ["Review Week 16", "Review Week 16", "Review Week 16"], boss: "Design Excel Sum", co: "Hard" }
             ]
         },
-        // --- MONTH 5: SCALING & CAPSTONE ---
         {
             week: 17, title: "Sys Design I",
+            prep: { title: "System Design Primer", url: "https://github.com/donnemartin/system-design-primer" },
             tech: { 
                 be: ["Zipkin Tracing", "Sleuth Logging", "Distributed IDs"], 
                 fe: ["List Virtualization", "Infinite Scroll", "Debouncing/Throttling"], 
@@ -442,6 +452,7 @@
         },
         {
             week: 18, title: "Sys Design II",
+            prep: { title: "SOLID Principles in Java", url: "https://www.baeldung.com/java-solid-interview-questions" },
             tech: { 
                 be: ["Factory Pattern", "Strategy Pattern", "Observer Pattern"], 
                 fe: ["Dashboard Layouts", "Chart.js/Recharts", "Data Visualization"], 
@@ -460,6 +471,7 @@
         },
         {
             week: 19, title: "Math & Bit",
+            prep: { title: "HLD & Architecture Patterns", url: "https://medium.com/must-know-computer-science-concepts" },
             tech: { 
                 be: ["WebSockets Config", "STOMP Protocol", "Real-time Messaging"], 
                 fe: ["WebSocket Client", "Chat UI Component", "Live Updates"], 
@@ -478,6 +490,7 @@
         },
         {
             week: 20, title: "Capstone Core",
+            prep: { title: "DP Practice Problems", url: "https://leetcode.com/tag/dynamic-programming/" },
             tech: { 
                 be: ["Final Backend Polish", "Redis Caching", "API Optimization"], 
                 fe: ["WCAG Accessibility", "ARIA Labels", "Keyboard Nav"], 
@@ -494,9 +507,9 @@
                 { name: "Sun", drill: ["Review Week 20", "Review Week 20", "Review Week 20"], boss: "End to End Test", co: "Project" }
             ]
         },
-        // --- MONTH 6: DEPLOY & PREP ---
         {
             week: 21, title: "Deployment",
+            prep: { title: "Tries & Advanced Data Structures", url: "https://leetcode.com/tag/trie/" },
             tech: { 
                 be: ["Prod Profile Config", "DB Migration", "Log Aggregation"], 
                 fe: ["Prod Build Optimization", "Asset Minification", "SEO Meta Tags"], 
@@ -515,6 +528,7 @@
         },
         {
             week: 22, title: "Review Hard",
+            prep: { title: "Graph Hard Problems", url: "https://leetcode.com/tag/graph/" },
             tech: { 
                 be: ["Review Java Weaknesses", "JVM Tuning", "Profiling"], 
                 fe: ["Review JS Tricky Parts", "Closures/Hoisting", "Event Delegation"], 
@@ -533,6 +547,7 @@
         },
         {
             week: 23, title: "Mock Interviews",
+            prep: { title: "Pramp Peer Mock Interviews", url: "https://www.pramp.com/" },
             tech: { 
                 be: ["Spring Internals", "AOP & Proxies", "Transaction Mgmt"], 
                 fe: ["React Lifecycle Deep Dive", "Performance Profiling", "Bundle Analysis"], 
@@ -551,6 +566,7 @@
         },
         {
             week: 24, title: "Final Polish",
+            prep: { title: "Behavioral Interview Questions", url: "https://www.cultivatedculture.com/behavioral-interview-questions/" },
             tech: { 
                 be: ["Resume Keywords (ATS)", "Project Descriptions", "Impact Statements"], 
                 fe: ["Portfolio Cleanup", "GitHub Readme Polish", "Live Demo Links"], 
@@ -585,6 +601,15 @@
                         <span style="font-size:0.8rem; font-weight:400">Expand ▼</span>
                     </div>
                     <div class="week-content">
+                        
+                        <div class="prep-box">
+                            <div>
+                                <strong style="font-size:0.9rem">🎯 Interview Focus:</strong>
+                                <span style="margin-left:8px; font-size:0.9rem">${week.prep.title}</span>
+                            </div>
+                            <a href="${week.prep.url}" target="_blank" class="prep-link">Start Prep ↗</a>
+                        </div>
+
                         <div class="notes-area">
                             <div class="notes-header">
                                 <span>📝 Week ${week.week} Notes & Learnings</span>
