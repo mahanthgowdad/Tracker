@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAANG 24-Week Detailed Roadmap</title>
+    <title>MAANG 24-Week Tracker + Notes</title>
     <style>
         :root {
             --bg: #f8fafc;
@@ -12,9 +12,8 @@
             --secondary: #64748b;
             --success: #16a34a;
             --border: #e2e8f0;
-            --google: #ea4335;
-            --meta: #0668E1;
-            --amazon: #ff9900;
+            --note-bg: #fffbeb;
+            --note-border: #fcd34d;
         }
 
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #1e293b; }
@@ -35,8 +34,9 @@
         /* Week Card */
         .week-card {
             background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow: hidden; transition: box-shadow 0.2s;
         }
+        .week-card:hover { box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .week-header {
             padding: 1rem; background: #f1f5f9; cursor: pointer; display: flex; justify-content: space-between;
             align-items: center; font-weight: 700; border-bottom: 1px solid var(--border);
@@ -69,6 +69,30 @@
         .boss-box { margin-top: 10px; background: #fff1f2; padding: 8px; border-radius: 4px; border: 1px solid #fecdd3; }
         .boss-label { font-size: 0.7rem; font-weight: 800; color: #be123c; text-transform: uppercase; display: block; }
 
+        /* --- NOTES SECTION --- */
+        .notes-area {
+            margin-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+        }
+        .notes-header { font-size: 0.9rem; font-weight: 700; color: var(--secondary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 6px; }
+        .custom-textarea {
+            width: 100%;
+            height: 100px;
+            padding: 12px;
+            border: 1px solid var(--note-border);
+            border-radius: 6px;
+            background-color: var(--note-bg);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+            box-sizing: border-box;
+            outline: none;
+            line-height: 1.4;
+        }
+        .custom-textarea:focus { border-color: #f59e0b; box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2); }
+        .save-indicator { font-size: 0.75rem; color: var(--success); margin-left: auto; opacity: 0; transition: opacity 0.5s; }
+
         input[type="checkbox"] { accent-color: var(--success); cursor: pointer; }
         
         /* Utility */
@@ -79,7 +103,7 @@
         @media print {
             .week-content { display: block !important; }
             .week-card { break-inside: avoid; }
-            .header, .controls { display: none; }
+            .header, .controls, .notes-area { display: none; } /* Hide notes in print to save paper, or remove class to show */
         }
     </style>
 </head>
@@ -87,7 +111,7 @@
 
 <div class="header">
     <div>
-        <h1>MAANG 24-Week Detailed Roadmap</h1>
+        <h1>MAANG 24-Week Tracker</h1>
         <span style="font-size: 0.8rem; opacity: 0.8;">Full Stack • AI • DevOps • DSA</span>
     </div>
     <div class="progress-box">
@@ -104,9 +128,8 @@
 </div>
 
 <script>
-    // === 24-WEEK DATABASE WITH 3 TOPICS PER WEEK ===
+    // === 24-WEEK DATABASE ===
     const roadmapData = [
-        // --- MONTH 1: FOUNDATIONS ---
         {
             week: 1, title: "Arrays & Hashing",
             tech: { 
@@ -550,7 +573,8 @@
     function renderApp() {
         const app = document.getElementById('app');
         app.innerHTML = '';
-        const saved = JSON.parse(localStorage.getItem('maang24')) || {};
+        const saved = JSON.parse(localStorage.getItem('maang24_notes')) || {};
+        const savedNotes = JSON.parse(localStorage.getItem('maang_notes_content')) || {};
         let total = 0, completed = 0;
 
         roadmapData.forEach((week, wIdx) => {
@@ -561,6 +585,19 @@
                         <span style="font-size:0.8rem; font-weight:400">Expand ▼</span>
                     </div>
                     <div class="week-content">
+                        <div class="notes-area">
+                            <div class="notes-header">
+                                <span>📝 Week ${week.week} Notes & Learnings</span>
+                                <span id="save-indicator-${wIdx}" class="save-indicator">Saved ✓</span>
+                            </div>
+                            <textarea 
+                                id="note-${wIdx}" 
+                                class="custom-textarea" 
+                                placeholder="Jot down difficult patterns, syntax tricks, or useful links for Week ${week.week}..." 
+                                oninput="saveNote(${wIdx})">${savedNotes[wIdx] || ''}</textarea>
+                        </div>
+                        <br>
+
                         <div class="tech-grid">
                             <div class="tech-col">
                                 <span class="tech-label">Backend</span>
@@ -586,7 +623,7 @@
                     const pid = `w${wIdx}-d${dIdx}-p${pIdx}`;
                     const checked = saved[pid] ? 'checked' : '';
                     total++; if(checked) completed++;
-                    // LeetCode Link Logic (slugify)
+                    // LeetCode Link Logic
                     const slug = p.toLowerCase().replace(/[^a-z0-9]+/g, '-');
                     const url = `https://leetcode.com/problems/${slug}/`;
                     
@@ -626,9 +663,9 @@
     }
 
     function toggle(id) {
-        const saved = JSON.parse(localStorage.getItem('maang24')) || {};
+        const saved = JSON.parse(localStorage.getItem('maang24_notes')) || {};
         saved[id] = !saved[id];
-        localStorage.setItem('maang24', JSON.stringify(saved));
+        localStorage.setItem('maang24_notes', JSON.stringify(saved));
         renderApp();
         const weekIdx = id.split('-')[0].replace('w', '');
         setTimeout(() => document.getElementById(`week-${weekIdx}`).classList.add('active'), 0);
@@ -638,9 +675,22 @@
         document.getElementById(`week-${idx}`).classList.toggle('active');
     }
 
+    function saveNote(idx) {
+        const text = document.getElementById(`note-${idx}`).value;
+        const savedNotes = JSON.parse(localStorage.getItem('maang_notes_content')) || {};
+        savedNotes[idx] = text;
+        localStorage.setItem('maang_notes_content', JSON.stringify(savedNotes));
+        
+        // Visual feedback
+        const indicator = document.getElementById(`save-indicator-${idx}`);
+        indicator.style.opacity = '1';
+        setTimeout(() => { indicator.style.opacity = '0'; }, 1500);
+    }
+
     function resetProgress() {
         if(confirm("Reset entire 6-month progress?")) {
-            localStorage.removeItem('maang24');
+            localStorage.removeItem('maang24_notes');
+            localStorage.removeItem('maang_notes_content');
             renderApp();
         }
     }
